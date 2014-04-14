@@ -46,6 +46,16 @@ class Firewall(object):
         except Exception as e:
             logger.critical('Cannot insert rule.\n%s' % e)
 
+    def remove(self, src):
+        for rule in self.chain.rules:
+            if src in rule.get_src():
+                try:
+                    self.chain.delete_rule(rule)
+                except Exception as e:
+                    logger.critical('Cannot delete rule with src ip: %s. Error: %s' % (src, e))
+
+''' test unit'''
 if __name__ == '__main__':
     f = Firewall()
     f.permit('8.8.8.8', '53')
+    f.remove('8.8.8.8')
